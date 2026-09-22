@@ -1,0 +1,24 @@
+# Produção — assume Traefik já rodando no servidor (rede externa "web")
+# conforme Escritorio/Stack/stack_padrao.md. Este compose só sobe o site.
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: toptrade-site
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.toptrade.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.toptrade.entrypoints=websecure"
+      - "traefik.http.routers.toptrade.tls.certresolver=letsencrypt"
+      - "traefik.http.services.toptrade.loadbalancer.server.port=3000"
+    networks:
+      - web
+
+networks:
+  web:
+    external: true
