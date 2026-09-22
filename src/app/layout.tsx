@@ -4,7 +4,8 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WhatsAppFAB from "@/components/WhatsAppFAB";
-import { siteConfig } from "@/data/site-config";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
+import { SITE_URL, siteConfig } from "@/data/site-config";
 
 const oswald = Oswald({
   subsets: ["latin"],
@@ -20,7 +21,10 @@ const inter = Inter({
   display: "swap",
 });
 
+const ogImage = `${SITE_URL}/og-image.jpg`;
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: `${siteConfig.nome} — ${siteConfig.tagline}`,
     template: `%s | ${siteConfig.nome}`,
@@ -33,6 +37,21 @@ export const metadata: Metadata = {
     "revenda multimarcas",
     "financiamento de carro",
   ],
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: siteConfig.nome,
+    title: `${siteConfig.nome} — ${siteConfig.tagline}`,
+    description: siteConfig.descricao,
+    url: SITE_URL,
+    images: [{ url: ogImage, width: 1200, height: 630, alt: siteConfig.nome }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteConfig.nome} — ${siteConfig.tagline}`,
+    description: siteConfig.descricao,
+    images: [ogImage],
+  },
 };
 
 export default function RootLayout({
@@ -47,6 +66,7 @@ export default function RootLayout({
         <main>{children}</main>
         <Footer />
         <WhatsAppFAB mensagem="Olá! Vim pelo site e queria saber mais sobre os carros disponíveis." />
+        <GoogleAnalytics />
       </body>
     </html>
   );

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import CarGrid from "@/components/CarGrid";
 import { estoque } from "@/data/estoque";
+import { temFotoReal } from "@/lib/fotos";
 
 export const metadata: Metadata = {
   title: "Estoque completo",
@@ -23,7 +24,7 @@ export default function EstoquePage() {
       </p>
 
       <div className="mt-10">
-        <CarGrid veiculos={estoque} />
+        <CarGrid veiculos={estoque.map((v) => ({ ...v, fotoReal: temFotoReal(v.slug) }))} />
       </div>
     </div>
   );

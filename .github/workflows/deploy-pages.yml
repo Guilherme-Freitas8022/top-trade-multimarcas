@@ -33,6 +33,10 @@ jobs:
         env:
           GITHUB_PAGES: "true"
           NEXT_PUBLIC_BASE_PATH: /top-trade-multimarcas
+          # Definir um Secret/Variable "GA_ID" no repositório (Settings > Secrets
+          # and variables > Actions) para ativar o Google Analytics. Sem isso,
+          # o site funciona normalmente e o Analytics não carrega.
+          NEXT_PUBLIC_GA_ID: ${{ vars.GA_ID }}
 
       - name: Marcar saída como estática (.nojekyll)
         run: touch ./out/.nojekyll

@@ -3,9 +3,11 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { estoque, getVeiculoBySlug } from "@/data/estoque";
 import { formatKm, formatPreco } from "@/lib/format";
-import { linkWhatsApp, siteConfig } from "@/data/site-config";
+import { linkWhatsApp, siteConfig, SITE_URL } from "@/data/site-config";
 import CarGallery from "@/components/CarGallery";
 import CarCard from "@/components/CarCard";
+import ShareButton from "@/components/ShareButton";
+import { temFotoReal } from "@/lib/fotos";
 
 export function generateStaticParams() {
   return estoque.map((v) => ({ slug: v.slug }));
@@ -21,12 +23,23 @@ export async function generateMetadata({
   if (!veiculo) return { title: "Veículo não encontrado" };
 
   const titulo = `${veiculo.marca} ${veiculo.modelo} ${veiculo.anoModelo}`;
-  return {
-    title: titulo,
-    description: `${titulo} — ${veiculo.versao}, ${formatKm(veiculo.km)}, por ${formatPreco(
-      veiculo.preco,
-    )}. Disponível na ${siteConfig.nome} em Volta Redonda/RJ.`,
-  };
+  const descricao = `${titulo} — ${veiculo.versao}, ${formatKm(veiculo.km)}, por ${formatPreco(
+    veiculo.preco,
+  )}. Disponível na ${siteConfig.nome} em Volta Redonda/RJ.`;
+
+  const metadata: Metadata = { title: titulo, description: descricao };
+
+  if (temFotoReal(veiculo.slug)) {
+    const imagemUrl = `${SITE_URL}/estoque/${veiculo.slug}/1.jpg`;
+    metadata.openGraph = {
+      title: titulo,
+      description: descricao,
+      images: [{ url: imagemUrl, width: 1200, height: 900, alt: titulo }],
+    };
+    metadata.twitter = { card: "summary_large_image", title: titulo, description: descricao, images: [imagemUrl] };
+  }
+
+  return metadata;
 }
 
 export default async function VeiculoPage({
@@ -55,7 +68,13 @@ export default async function VeiculoPage({
 
       <div className="mt-6 grid grid-cols-1 gap-10 lg:grid-cols-5">
         <div className="lg:col-span-3">
-          <CarGallery marca={veiculo.marca} modelo={veiculo.modelo} cor={veiculo.cor} />
+          <CarGallery
+            marca={veiculo.marca}
+            modelo={veiculo.modelo}
+            cor={veiculo.cor}
+            slug={veiculo.slug}
+            temFotoReal={temFotoReal(veiculo.slug)}
+          />
         </div>
 
         <div className="lg:col-span-2">
@@ -72,14 +91,20 @@ export default async function VeiculoPage({
             {formatPreco(veiculo.preco)}
           </p>
 
-          <a
-            href={linkWhatsApp(mensagem)}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary mt-6 w-full"
-          >
-            Tenho interesse — falar no WhatsApp
-          </a>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <a
+              href={linkWhatsApp(mensagem)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary flex-1"
+            >
+              Tenho interesse — falar no WhatsApp
+            </a>
+            <ShareButton
+              titulo={`${veiculo.marca} ${veiculo.modelo} ${veiculo.anoModelo}`}
+              texto={`Dá uma olhada nesse ${veiculo.marca} ${veiculo.modelo} que achei na ${siteConfig.nome}!`}
+            />
+          </div>
 
           <dl className="mt-8 grid grid-cols-2 gap-y-4 border-t border-white/10 pt-6">
             <div>
@@ -138,7 +163,7 @@ export default async function VeiculoPage({
           </h2>
           <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {relacionados.map((v) => (
-              <CarCard key={v.slug} veiculo={v} />
+              <CarCard key={v.slug} veiculo={v} fotoReal={temFotoReal(v.slug)} />
             ))}
           </div>
         </div>

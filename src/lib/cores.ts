@@ -12,6 +12,7 @@ const MAPA_CORES: Record<string, string> = {
   Bege: "#C7B48E",
   Azul: "#2E5C8A",
   Verde: "#3B6E4A",
+  Laranja: "#C0682A",
 };
 
 export function corVeiculo(nome: string): string {

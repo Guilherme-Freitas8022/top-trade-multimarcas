@@ -1,20 +1,23 @@
 import Link from "next/link";
 import type { Veiculo } from "@/data/estoque";
 import { formatKm, formatPreco } from "@/lib/format";
-import CarPhotoPlaceholder from "./CarPhotoPlaceholder";
+import CarThumb from "./CarThumb";
 
-export default function CarCard({ veiculo }: { veiculo: Veiculo }) {
+export default function CarCard({ veiculo, fotoReal }: { veiculo: Veiculo; fotoReal: boolean }) {
   return (
     <Link
       href={`/estoque/${veiculo.slug}`}
       className="group flex flex-col overflow-hidden rounded border border-white/10 bg-brand-surface transition-colors hover:border-brand-lime/50"
     >
-      <div className="relative">
-        <CarPhotoPlaceholder
+      <div className="relative aspect-[4/3] w-full overflow-hidden">
+        <CarThumb
+          slug={veiculo.slug}
           marca={veiculo.marca}
           modelo={veiculo.modelo}
           cor={veiculo.cor}
-          className="aspect-[4/3] w-full"
+          fotoReal={fotoReal}
+          className="h-full w-full"
+          imgClassName="transition-transform group-hover:scale-105"
         />
         <span
           className={`badge absolute left-3 top-3 ${

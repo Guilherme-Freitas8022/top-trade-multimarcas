@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import CarIllustration, { type Angulo } from "./CarIllustration";
 import { corVeiculo } from "@/lib/cores";
+import { BASE_PATH } from "@/lib/base-path";
 
 const ANGULOS: { valor: Angulo; label: string }[] = [
   { valor: "lateral", label: "Lateral" },
@@ -14,13 +16,37 @@ export default function CarGallery({
   marca,
   modelo,
   cor,
+  slug,
+  temFotoReal,
 }: {
   marca: string;
   modelo: string;
   cor: string;
+  slug: string;
+  temFotoReal: boolean;
 }) {
   const [angulo, setAngulo] = useState<Angulo>("lateral");
   const hex = corVeiculo(cor);
+
+  if (temFotoReal) {
+    return (
+      <div>
+        <div className="relative aspect-[4/3] overflow-hidden rounded border border-white/10 bg-brand-surface2">
+          <Image
+            src={`${BASE_PATH}/estoque/${slug}/1.jpg`}
+            alt={`${marca} ${modelo}`}
+            fill
+            sizes="(min-width: 1024px) 60vw, 100vw"
+            className="object-cover"
+            priority
+          />
+          <span className="absolute bottom-2 left-2 rounded-sm bg-black/55 px-1.5 py-0.5 font-body text-[9px] uppercase tracking-wide text-brand-white/60">
+            Foto ilustrativa do modelo — não é a unidade física do estoque
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>

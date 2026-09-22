@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { linkWhatsApp, siteConfig } from "@/data/site-config";
 import { getDestaques } from "@/data/estoque";
-import CarPhotoPlaceholder from "./CarPhotoPlaceholder";
+import CarThumb from "./CarThumb";
+import { temFotoReal } from "@/lib/fotos";
 
 export default function Hero() {
   const destaques = getDestaques().slice(0, 3);
@@ -67,7 +68,9 @@ export default function Hero() {
 
         <div className="relative mx-auto grid w-full max-w-md grid-cols-2 gap-4 lg:mx-0">
           {destaques[0] && (
-            <CarPhotoPlaceholder
+            <CarThumb
+              slug={destaques[0].slug}
+              fotoReal={temFotoReal(destaques[0].slug)}
               marca={destaques[0].marca}
               modelo={destaques[0].modelo}
               cor={destaques[0].cor}
@@ -76,7 +79,9 @@ export default function Hero() {
             />
           )}
           {destaques[1] && (
-            <CarPhotoPlaceholder
+            <CarThumb
+              slug={destaques[1].slug}
+              fotoReal={temFotoReal(destaques[1].slug)}
               marca={destaques[1].marca}
               modelo={destaques[1].modelo}
               cor={destaques[1].cor}
@@ -85,7 +90,9 @@ export default function Hero() {
             />
           )}
           {destaques[2] && (
-            <CarPhotoPlaceholder
+            <CarThumb
+              slug={destaques[2].slug}
+              fotoReal={temFotoReal(destaques[2].slug)}
               marca={destaques[2].marca}
               modelo={destaques[2].modelo}
               cor={destaques[2].cor}

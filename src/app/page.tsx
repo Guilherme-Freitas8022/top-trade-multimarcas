@@ -3,6 +3,7 @@ import Hero from "@/components/Hero";
 import CarCard from "@/components/CarCard";
 import { getDestaques } from "@/data/estoque";
 import { diferenciais } from "@/data/diferenciais";
+import { temFotoReal } from "@/lib/fotos";
 
 export default function HomePage() {
   const destaques = getDestaques().slice(0, 6);
@@ -31,7 +32,7 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {destaques.map((v) => (
-            <CarCard key={v.slug} veiculo={v} />
+            <CarCard key={v.slug} veiculo={v} fotoReal={temFotoReal(v.slug)} />
           ))}
         </div>
       </section>
