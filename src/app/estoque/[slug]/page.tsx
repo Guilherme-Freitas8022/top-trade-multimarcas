@@ -7,7 +7,7 @@ import { linkWhatsApp, siteConfig, SITE_URL } from "@/data/site-config";
 import CarGallery from "@/components/CarGallery";
 import CarCard from "@/components/CarCard";
 import ShareButton from "@/components/ShareButton";
-import { temFotoReal } from "@/lib/fotos";
+import { contarFotos } from "@/lib/fotos";
 
 export function generateStaticParams() {
   return estoque.map((v) => ({ slug: v.slug }));
@@ -29,12 +29,12 @@ export async function generateMetadata({
 
   const metadata: Metadata = { title: titulo, description: descricao };
 
-  if (temFotoReal(veiculo.slug)) {
+  if (contarFotos(veiculo.slug) > 0) {
     const imagemUrl = `${SITE_URL}/estoque/${veiculo.slug}/1.jpg`;
     metadata.openGraph = {
       title: titulo,
       description: descricao,
-      images: [{ url: imagemUrl, width: 1200, height: 900, alt: titulo }],
+      images: [{ url: imagemUrl, alt: titulo }],
     };
     metadata.twitter = { card: "summary_large_image", title: titulo, description: descricao, images: [imagemUrl] };
   }
@@ -73,7 +73,7 @@ export default async function VeiculoPage({
             modelo={veiculo.modelo}
             cor={veiculo.cor}
             slug={veiculo.slug}
-            temFotoReal={temFotoReal(veiculo.slug)}
+            totalFotos={contarFotos(veiculo.slug)}
           />
         </div>
 
@@ -163,7 +163,7 @@ export default async function VeiculoPage({
           </h2>
           <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {relacionados.map((v) => (
-              <CarCard key={v.slug} veiculo={v} fotoReal={temFotoReal(v.slug)} />
+              <CarCard key={v.slug} veiculo={v} fotoReal={contarFotos(v.slug) > 0} />
             ))}
           </div>
         </div>

@@ -17,33 +17,57 @@ export default function CarGallery({
   modelo,
   cor,
   slug,
-  temFotoReal,
+  totalFotos,
 }: {
   marca: string;
   modelo: string;
   cor: string;
   slug: string;
-  temFotoReal: boolean;
+  totalFotos: number;
 }) {
+  const [indice, setIndice] = useState(0);
   const [angulo, setAngulo] = useState<Angulo>("lateral");
   const hex = corVeiculo(cor);
 
-  if (temFotoReal) {
+  if (totalFotos > 0) {
     return (
       <div>
         <div className="relative aspect-[4/3] overflow-hidden rounded border border-white/10 bg-brand-surface2">
           <Image
-            src={`${BASE_PATH}/estoque/${slug}/1.jpg`}
-            alt={`${marca} ${modelo}`}
+            src={`${BASE_PATH}/estoque/${slug}/${indice + 1}.jpg`}
+            alt={`${marca} ${modelo} — foto ${indice + 1}`}
             fill
             sizes="(min-width: 1024px) 60vw, 100vw"
-            className="object-cover"
+            className="object-contain p-3"
             priority
           />
           <span className="absolute bottom-2 left-2 rounded-sm bg-black/55 px-1.5 py-0.5 font-body text-[9px] uppercase tracking-wide text-brand-white/60">
             Foto ilustrativa do modelo — não é a unidade física do estoque
           </span>
         </div>
+
+        {totalFotos > 1 && (
+          <div className="mt-3 grid grid-cols-4 gap-3">
+            {Array.from({ length: totalFotos }).map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setIndice(i)}
+                className={`relative aspect-[4/3] overflow-hidden rounded border bg-brand-surface2 transition-colors ${
+                  indice === i ? "border-brand-lime" : "border-white/10 hover:border-white/30"
+                }`}
+              >
+                <Image
+                  src={`${BASE_PATH}/estoque/${slug}/${i + 1}.jpg`}
+                  alt={`${marca} ${modelo} — miniatura ${i + 1}`}
+                  fill
+                  sizes="120px"
+                  className="object-contain p-1"
+                />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     );
   }

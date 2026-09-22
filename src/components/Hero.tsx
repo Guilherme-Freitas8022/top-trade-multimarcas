@@ -66,40 +66,21 @@ export default function Hero() {
           </dl>
         </div>
 
-        <div className="relative mx-auto grid w-full max-w-md grid-cols-2 gap-4 lg:mx-0">
-          {destaques[0] && (
+        <div className="relative mx-auto grid w-full max-w-lg grid-cols-3 gap-3 lg:mx-0">
+          {destaques.map((v, i) => (
             <CarThumb
-              slug={destaques[0].slug}
-              fotoReal={temFotoReal(destaques[0].slug)}
-              marca={destaques[0].marca}
-              modelo={destaques[0].modelo}
-              cor={destaques[0].cor}
-              angulo="lateral"
-              className="col-span-2 h-40 rounded border border-white/10"
+              key={v.slug}
+              slug={v.slug}
+              fotoReal={temFotoReal(v.slug)}
+              marca={v.marca}
+              modelo={v.modelo}
+              cor={v.cor}
+              angulo={i === 0 ? "lateral" : i === 1 ? "frente" : "traseira"}
+              className={`aspect-[4/3] rounded border ${
+                i === 0 ? "border-2 border-brand-lime" : "border-white/10"
+              }`}
             />
-          )}
-          {destaques[1] && (
-            <CarThumb
-              slug={destaques[1].slug}
-              fotoReal={temFotoReal(destaques[1].slug)}
-              marca={destaques[1].marca}
-              modelo={destaques[1].modelo}
-              cor={destaques[1].cor}
-              angulo="frente"
-              className="h-32 rounded border border-white/10"
-            />
-          )}
-          {destaques[2] && (
-            <CarThumb
-              slug={destaques[2].slug}
-              fotoReal={temFotoReal(destaques[2].slug)}
-              marca={destaques[2].marca}
-              modelo={destaques[2].modelo}
-              cor={destaques[2].cor}
-              angulo="traseira"
-              className="h-32 rounded border-2 border-brand-lime"
-            />
-          )}
+          ))}
         </div>
       </div>
     </section>
