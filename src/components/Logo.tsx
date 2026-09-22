@@ -3,6 +3,7 @@
 // Copiado para public/logo.png (296x222px, fundo removido).
 
 import Image from "next/image";
+import { BASE_PATH } from "@/lib/base-path";
 
 export default function Logo({
   className = "",
@@ -15,7 +16,7 @@ export default function Logo({
   return (
     <div className={`flex items-center ${className}`}>
       <Image
-        src="/logo.png"
+        src={`${BASE_PATH}/logo.png`}
         alt="Top Trade Multimarcas"
         width={296}
         height={222}

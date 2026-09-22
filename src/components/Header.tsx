@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import Logo from "./Logo";
 import { linkWhatsApp, siteConfig } from "@/data/site-config";
@@ -22,8 +23,14 @@ const NAV = [
   { href: "/contato", label: "Contato" },
 ];
 
+function isAtivo(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export default function Header() {
   const [aberto, setAberto] = useState(false);
+  const pathname = usePathname();
 
   return (
     <header className="sticky top-0 z-40 border-b border-white/10 bg-brand-black/95 backdrop-blur">
@@ -33,15 +40,21 @@ export default function Header() {
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="font-display text-sm font-medium uppercase tracking-wide text-brand-white/80 transition-colors hover:text-brand-lime"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV.map((item) => {
+            const ativo = isAtivo(pathname, item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={ativo ? "page" : undefined}
+                className={`font-display text-sm font-medium uppercase tracking-wide transition-colors hover:text-brand-lime ${
+                  ativo ? "text-brand-lime" : "text-brand-white/80"
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
@@ -83,16 +96,22 @@ export default function Header() {
       {aberto && (
         <nav className="border-t border-white/10 bg-brand-black md:hidden">
           <div className="container-page flex flex-col gap-1 py-3">
-            {NAV.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setAberto(false)}
-                className="rounded px-2 py-3 font-display text-sm font-medium uppercase tracking-wide text-brand-white/85 hover:bg-white/5 hover:text-brand-lime"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {NAV.map((item) => {
+              const ativo = isAtivo(pathname, item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setAberto(false)}
+                  aria-current={ativo ? "page" : undefined}
+                  className={`rounded px-2 py-3 font-display text-sm font-medium uppercase tracking-wide hover:bg-white/5 hover:text-brand-lime ${
+                    ativo ? "text-brand-lime" : "text-brand-white/85"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
             <div className="mt-2 flex gap-3">
               <a
                 href={linkWhatsApp("Olá! Vim pelo site e queria saber mais sobre os carros disponíveis.")}

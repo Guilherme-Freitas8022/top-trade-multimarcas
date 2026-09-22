@@ -7,8 +7,8 @@ export default function Footer() {
     <footer className="border-t border-white/10 bg-brand-surface">
       <div className="container-page grid gap-x-8 gap-y-10 py-14 sm:grid-cols-2 md:grid-cols-4">
         <div className="sm:col-span-2 md:col-span-1">
-          <div className="flex h-9 items-center">
-            <Logo size="compact" />
+          <div className="flex h-12 items-center">
+            <Logo />
           </div>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-brand-white/60">
             {siteConfig.descricao}
@@ -16,7 +16,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <div className="flex h-9 items-center">
+          <div className="flex h-12 items-center">
             <h3 className="font-display text-xs font-semibold uppercase tracking-widest text-brand-lime">
               Navegação
             </h3>
@@ -30,7 +30,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <div className="flex h-9 items-center">
+          <div className="flex h-12 items-center">
             <h3 className="font-display text-xs font-semibold uppercase tracking-widest text-brand-lime">
               Contato
             </h3>
@@ -53,7 +53,7 @@ export default function Footer() {
         </div>
 
         <div>
-          <div className="flex h-9 items-center">
+          <div className="flex h-12 items-center">
             <h3 className="font-display text-xs font-semibold uppercase tracking-widest text-brand-lime">
               Horário
             </h3>

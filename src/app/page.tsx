@@ -2,11 +2,10 @@ import Link from "next/link";
 import Hero from "@/components/Hero";
 import CarCard from "@/components/CarCard";
 import { getDestaques } from "@/data/estoque";
-import { linkWhatsApp, siteConfig } from "@/data/site-config";
 import { diferenciais } from "@/data/diferenciais";
 
 export default function HomePage() {
-  const destaques = getDestaques();
+  const destaques = getDestaques().slice(0, 6);
 
   return (
     <>
@@ -60,24 +59,6 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </section>
-
-      <section className="container-page py-16 text-center sm:py-20">
-        <h2 className="font-display text-2xl font-bold uppercase text-brand-white sm:text-3xl">
-          Não achou o carro ideal no estoque?
-        </h2>
-        <p className="mx-auto mt-3 max-w-md text-brand-white/60">
-          Fale com a gente — a {siteConfig.nome} está no mercado há mais de
-          25 anos e pode buscar o carro certo para você.
-        </p>
-        <a
-          href={linkWhatsApp("Olá! Não encontrei o carro que eu queria no site, vocês podem me ajudar?")}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-primary mt-6 inline-flex"
-        >
-          Falar no WhatsApp
-        </a>
       </section>
     </>
   );
