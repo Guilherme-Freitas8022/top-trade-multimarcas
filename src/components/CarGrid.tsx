@@ -1,11 +1,10 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { Categoria, Veiculo } from "@/data/estoque";
+import type { Categoria, Veiculo } from "@/lib/veiculos";
 import CarCard from "./CarCard";
 
 type Filtro = "todos" | Categoria;
-type VeiculoComFoto = Veiculo & { fotoReal: boolean };
 
 const ANOS_MINIMOS = [
   { valor: "0", label: "Qualquer ano" },
@@ -33,7 +32,7 @@ const ORDENACOES: { valor: Ordenacao; label: string }[] = [
   { valor: "menor-km", label: "Menor km" },
 ];
 
-export default function CarGrid({ veiculos }: { veiculos: VeiculoComFoto[] }) {
+export default function CarGrid({ veiculos }: { veiculos: Veiculo[] }) {
   const [filtro, setFiltro] = useState<Filtro>("todos");
   const [busca, setBusca] = useState("");
   const [marca, setMarca] = useState("todas");
@@ -208,7 +207,7 @@ export default function CarGrid({ veiculos }: { veiculos: VeiculoComFoto[] }) {
       ) : (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {ordenados.map((v) => (
-            <CarCard key={v.slug} veiculo={v} fotoReal={v.fotoReal} />
+            <CarCard key={v.slug} veiculo={v} />
           ))}
         </div>
       )}

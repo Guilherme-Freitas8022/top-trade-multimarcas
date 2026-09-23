@@ -1,9 +1,8 @@
-// Logo oficial — enviado pelo cliente em 2026-09-22.
-// Arquivo fonte: Branding/Logos/logo_top_trade_multimarcas.png
-// Copiado para public/logo.png (296x222px, fundo removido).
+// Logo oficial — versão em alta qualidade enviada pelo cliente em 2026-09-22.
+// Arquivo fonte: Branding/Logos/logo_top_trade_multimarcas_v2.png
+// Copiado para public/logo.png (fundo removido).
 
 import Image from "next/image";
-import { BASE_PATH } from "@/lib/base-path";
 
 export default function Logo({
   className = "",
@@ -16,10 +15,10 @@ export default function Logo({
   return (
     <div className={`flex items-center ${className}`}>
       <Image
-        src={`${BASE_PATH}/logo.png`}
+        src="/logo.png"
         alt="Top Trade Multimarcas"
-        width={296}
-        height={222}
+        width={1672}
+        height={941}
         priority
         className={imgSize}
       />

@@ -39,4 +39,8 @@ body {
   .badge-seminovo {
     @apply border border-brand-white/30 text-brand-white;
   }
+
+  .input {
+    @apply w-full rounded border border-white/15 bg-brand-black px-4 py-2 text-sm text-brand-white focus:border-brand-lime focus:outline-none;
+  }
 }

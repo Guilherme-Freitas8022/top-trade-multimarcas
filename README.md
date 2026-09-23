@@ -4,11 +4,24 @@ Site institucional em Next.js para a Top Trade Multimarcas (revenda
 multimarcas, Volta Redonda/RJ). Ver especificação completa em
 `../../Acervo/D-00001_site_institucional/spec.md`.
 
-**No ar:** https://guilherme-freitas8022.github.io/top-trade-multimarcas/
-(GitHub Pages, deploy automático a cada push em `master` via
-`.github/workflows/deploy-pages.yml`)
+**Banco de dados + login:** Supabase (projeto `top-trade-multimarcas`).
+**Hospedagem:** Vercel (necessário — o site tem login/backend, não roda
+mais em hospedagem puramente estática como GitHub Pages).
 
-## Rodar localmente (sem Docker)
+## Variáveis de ambiente
+
+Crie `.env.local` (nunca versionado) com:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...   (chave "publishable")
+SUPABASE_SERVICE_ROLE_KEY=...       (chave "secret" — nunca expor no cliente)
+```
+
+Valores em Supabase → Settings → API. As mesmas 3 variáveis precisam estar
+configuradas no painel da Vercel (Project → Settings → Environment Variables).
+
+## Rodar localmente
 
 ```bash
 npm install
@@ -30,56 +43,58 @@ npm run build
 npm run start
 ```
 
-## Editar o estoque
+## Estoque — painel administrativo
 
-Enquanto não existir painel administrativo, o estoque é editado diretamente em:
+O estoque **não é mais um arquivo estático** — vive na tabela `veiculos`
+do Supabase. Editar pelo painel em `/admin` (link discreto "Área do
+vendedor" no rodapé do site), protegido por login (Supabase Auth,
+middleware em `src/middleware.ts`).
 
 ```
-src/data/estoque.ts     → lista de veículos (50 no momento)
-src/data/site-config.ts → telefone, endereço, horário, redes sociais
+/login              → tela de login
+/admin              → lista o estoque, marcar vendido, editar, excluir
+/admin/novo          → cadastrar veículo novo (com upload de fotos)
+/admin/[slug]/editar → editar veículo existente
 ```
 
-⚠️ **Preço, km e telefone são dados de EXEMPLO/PLACEHOLDER.** Endereço e
-descrição institucional já vieram do Google Business Profile (reais).
-Substituir preço/km/telefone por dados reais antes de considerar o site
-definitivo.
+Upload de fotos vai direto para o bucket `fotos-veiculos` do Supabase
+Storage (público para leitura, só usuário logado pode enviar/excluir).
+
+Camada de dados: `src/lib/veiculos.ts` (leitura) e `src/app/admin/actions.ts`
+(Server Actions de escrita — criar, atualizar, excluir, marcar vendido).
 
 ## Fotos dos veículos
 
-Duas camadas, com fallback automático (ver `src/components/CarThumb.tsx`):
+Dois casos, com fallback automático (`src/components/CarThumb.tsx` e
+`CarGallery.tsx`):
 
-1. **Foto real do modelo** — se existir `public/estoque/[slug]/1.jpg`, ela é
-   usada. São fotos de EXEMPLO do modelo/ano (buscadas na Wikipédia, licença
-   livre) — **não são as unidades físicas do estoque da loja**. Sempre
-   rotuladas "foto ilustrativa do modelo" na ficha do carro.
-2. **Ilustração vetorial** (`src/components/CarIllustration.tsx`) — fallback
-   para quando não há foto real. Colorida conforme o campo `cor`, em 3
-   ângulos, sempre rotulada "Ilustração".
+1. **Foto real** — se o veículo tiver alguma URL em `fotos` (array na
+   tabela), ela é usada, com galeria de miniaturas quando há mais de uma.
+   As 50 fichas de exemplo usam fotos de EXEMPLO do modelo/ano (buscadas na
+   Wikipédia, licença livre) — **não são as unidades físicas do estoque
+   real da loja**. Sempre rotuladas "foto ilustrativa do modelo".
+2. **Ilustração vetorial** (`src/components/CarIllustration.tsx`) —
+   fallback para veículo sem nenhuma foto. Colorida conforme o campo `cor`,
+   em 3 ângulos, sempre rotulada "Ilustração".
 
-Créditos/fontes de cada foto (título do verbete da Wikipédia usado) ficam
-em `fotos-creditos.json`, versionado para referência de atribuição
-(licenças da Wikimedia Commons exigem crédito). 42 dos 50 veículos têm foto
-real; os 8 restantes usam a ilustração vetorial (busca não encontrou imagem
-compatível para esses modelos específicos).
-
-Quando houver fotos reais do estoque de verdade: substituir os arquivos em
-`public/estoque/[slug]/1.jpg` diretamente — o site já usa essas fotos
-automaticamente, sem precisar mexer em código.
+Créditos das fotos de exemplo (título do verbete da Wikipédia usado) em
+`fotos-creditos.json`, versionado para referência de atribuição.
 
 ## Analytics (opcional)
 
 Google Analytics 4 vem desligado por padrão (`src/components/GoogleAnalytics.tsx`
-não renderiza nada sem `NEXT_PUBLIC_GA_ID`). Para ativar:
+não renderiza nada sem `NEXT_PUBLIC_GA_ID`). Para ativar, criar propriedade
+em [analytics.google.com](https://analytics.google.com) e definir
+`NEXT_PUBLIC_GA_ID` nas variáveis de ambiente (Vercel + `.env.local`).
 
-1. Criar propriedade em [analytics.google.com](https://analytics.google.com) → Admin → Fluxo de dados Web
-2. Copiar o ID (formato `G-XXXXXXXXXX`)
-3. No GitHub: Settings → Secrets and variables → Actions → Variables → criar `GA_ID` com esse valor
-4. Local: colar em `.env.local` como `NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX`
+## Deploy
 
-## Deploy definitivo
+**Vercel** é a hospedagem — suporta Server Actions e login nativamente,
+sem precisar administrar servidor. Conectar o repositório GitHub
+`Guilherme-Freitas8022/top-trade-multimarcas` a um projeto Vercel e
+configurar as 3 variáveis do Supabase.
 
-GitHub Pages é solução temporária. Deploy definitivo depende de domínio
-próprio e decisão de infraestrutura (Hetzner + Cloudflare + Traefik,
-conforme `Escritorio/Stack/stack_padrao.md`). `docker-compose.yml` já está
-pronto assumindo Traefik compartilhado no servidor (rede externa `web`) e
-variável `DOMAIN` no `.env` de produção.
+`docker-compose.yml` continua disponível como alternativa (Hetzner +
+Traefik, conforme `Escritorio/Stack/stack_padrao.md`), caso o projeto migre
+para infraestrutura própria no futuro — variável `DOMAIN` no `.env` de
+produção nesse cenário.

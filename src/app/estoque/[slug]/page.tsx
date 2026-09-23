@@ -1,17 +1,14 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { estoque, getVeiculoBySlug } from "@/data/estoque";
+import { getEstoque, getVeiculoBySlug } from "@/lib/veiculos";
 import { formatKm, formatPreco } from "@/lib/format";
 import { linkWhatsApp, siteConfig, SITE_URL } from "@/data/site-config";
 import CarGallery from "@/components/CarGallery";
 import CarCard from "@/components/CarCard";
 import ShareButton from "@/components/ShareButton";
-import { contarFotos } from "@/lib/fotos";
 
-export function generateStaticParams() {
-  return estoque.map((v) => ({ slug: v.slug }));
-}
+export const revalidate = 0;
 
 export async function generateMetadata({
   params,
@@ -19,7 +16,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const veiculo = getVeiculoBySlug(slug);
+  const veiculo = await getVeiculoBySlug(slug);
   if (!veiculo) return { title: "Veículo não encontrado" };
 
   const titulo = `${veiculo.marca} ${veiculo.modelo} ${veiculo.anoModelo}`;
@@ -29,8 +26,10 @@ export async function generateMetadata({
 
   const metadata: Metadata = { title: titulo, description: descricao };
 
-  if (contarFotos(veiculo.slug) > 0) {
-    const imagemUrl = `${SITE_URL}/estoque/${veiculo.slug}/1.jpg`;
+  if (veiculo.fotos.length > 0) {
+    const imagemUrl = veiculo.fotos[0].startsWith("http")
+      ? veiculo.fotos[0]
+      : `${SITE_URL}${veiculo.fotos[0]}`;
     metadata.openGraph = {
       title: titulo,
       description: descricao,
@@ -48,9 +47,10 @@ export default async function VeiculoPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const veiculo = getVeiculoBySlug(slug);
-  if (!veiculo) notFound();
+  const veiculo = await getVeiculoBySlug(slug);
+  if (!veiculo || veiculo.vendido) notFound();
 
+  const estoque = await getEstoque();
   const relacionados = estoque
     .filter((v) => v.slug !== veiculo.slug && v.categoria === veiculo.categoria)
     .slice(0, 3);
@@ -72,8 +72,7 @@ export default async function VeiculoPage({
             marca={veiculo.marca}
             modelo={veiculo.modelo}
             cor={veiculo.cor}
-            slug={veiculo.slug}
-            totalFotos={contarFotos(veiculo.slug)}
+            fotos={veiculo.fotos}
           />
         </div>
 
@@ -163,7 +162,7 @@ export default async function VeiculoPage({
           </h2>
           <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {relacionados.map((v) => (
-              <CarCard key={v.slug} veiculo={v} fotoReal={contarFotos(v.slug) > 0} />
+              <CarCard key={v.slug} veiculo={v} />
             ))}
           </div>
         </div>

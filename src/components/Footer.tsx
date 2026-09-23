@@ -5,12 +5,12 @@ import { siteConfig } from "@/data/site-config";
 export default function Footer() {
   return (
     <footer className="border-t border-white/10 bg-brand-surface">
-      <div className="container-page grid gap-x-8 gap-y-10 py-14 sm:grid-cols-2 md:grid-cols-4">
-        <div className="sm:col-span-2 md:col-span-1">
+      <div className="container-page flex flex-col gap-10 py-14 md:flex-row md:flex-wrap md:justify-between md:gap-x-12">
+        <div className="max-w-xs">
           <div className="flex h-12 items-center">
             <Logo />
           </div>
-          <p className="mt-4 max-w-xs text-sm leading-relaxed text-brand-white/60">
+          <p className="mt-4 text-sm leading-relaxed text-brand-white/60">
             {siteConfig.descricao}
           </p>
         </div>
@@ -69,10 +69,13 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10 py-6">
-        <div className="container-page text-center text-xs text-brand-white/40">
+        <div className="container-page flex flex-col items-center justify-between gap-2 text-center text-xs text-brand-white/40 sm:flex-row">
           <p>
             © {new Date().getFullYear()} {siteConfig.nome}. Todos os direitos reservados.
           </p>
+          <Link href="/login" className="hover:text-brand-lime">
+            Área do vendedor
+          </Link>
         </div>
       </div>
     </footer>

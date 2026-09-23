@@ -1,9 +1,9 @@
 import Link from "next/link";
-import type { Veiculo } from "@/data/estoque";
+import type { Veiculo } from "@/lib/veiculos";
 import { formatKm, formatPreco } from "@/lib/format";
 import CarThumb from "./CarThumb";
 
-export default function CarCard({ veiculo, fotoReal }: { veiculo: Veiculo; fotoReal: boolean }) {
+export default function CarCard({ veiculo }: { veiculo: Veiculo }) {
   return (
     <Link
       href={`/estoque/${veiculo.slug}`}
@@ -11,11 +11,10 @@ export default function CarCard({ veiculo, fotoReal }: { veiculo: Veiculo; fotoR
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden">
         <CarThumb
-          slug={veiculo.slug}
           marca={veiculo.marca}
           modelo={veiculo.modelo}
           cor={veiculo.cor}
-          fotoReal={fotoReal}
+          fotos={veiculo.fotos}
           className="h-full w-full"
           imgClassName="transition-transform group-hover:scale-105"
         />

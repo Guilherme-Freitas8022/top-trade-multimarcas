@@ -4,7 +4,6 @@ import { useState } from "react";
 import Image from "next/image";
 import CarIllustration, { type Angulo } from "./CarIllustration";
 import { corVeiculo } from "@/lib/cores";
-import { BASE_PATH } from "@/lib/base-path";
 
 const ANGULOS: { valor: Angulo; label: string }[] = [
   { valor: "lateral", label: "Lateral" },
@@ -16,25 +15,23 @@ export default function CarGallery({
   marca,
   modelo,
   cor,
-  slug,
-  totalFotos,
+  fotos,
 }: {
   marca: string;
   modelo: string;
   cor: string;
-  slug: string;
-  totalFotos: number;
+  fotos: string[];
 }) {
   const [indice, setIndice] = useState(0);
   const [angulo, setAngulo] = useState<Angulo>("lateral");
   const hex = corVeiculo(cor);
 
-  if (totalFotos > 0) {
+  if (fotos.length > 0) {
     return (
       <div>
         <div className="relative aspect-[4/3] overflow-hidden rounded border border-white/10 bg-brand-surface2">
           <Image
-            src={`${BASE_PATH}/estoque/${slug}/${indice + 1}.jpg`}
+            src={fotos[indice]}
             alt={`${marca} ${modelo} — foto ${indice + 1}`}
             fill
             sizes="(min-width: 1024px) 60vw, 100vw"
@@ -46,11 +43,11 @@ export default function CarGallery({
           </span>
         </div>
 
-        {totalFotos > 1 && (
+        {fotos.length > 1 && (
           <div className="mt-3 grid grid-cols-4 gap-3">
-            {Array.from({ length: totalFotos }).map((_, i) => (
+            {fotos.map((foto, i) => (
               <button
-                key={i}
+                key={foto}
                 type="button"
                 onClick={() => setIndice(i)}
                 className={`relative aspect-[4/3] overflow-hidden rounded border bg-brand-surface2 transition-colors ${
@@ -58,7 +55,7 @@ export default function CarGallery({
                 }`}
               >
                 <Image
-                  src={`${BASE_PATH}/estoque/${slug}/${i + 1}.jpg`}
+                  src={foto}
                   alt={`${marca} ${modelo} — miniatura ${i + 1}`}
                   fill
                   sizes="120px"

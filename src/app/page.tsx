@@ -1,12 +1,13 @@
 import Link from "next/link";
 import Hero from "@/components/Hero";
 import CarCard from "@/components/CarCard";
-import { getDestaques } from "@/data/estoque";
+import { getDestaques } from "@/lib/veiculos";
 import { diferenciais } from "@/data/diferenciais";
-import { temFotoReal } from "@/lib/fotos";
 
-export default function HomePage() {
-  const destaques = getDestaques().slice(0, 6);
+export const revalidate = 0;
+
+export default async function HomePage() {
+  const destaques = (await getDestaques()).slice(0, 6);
 
   return (
     <>
@@ -32,7 +33,7 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {destaques.map((v) => (
-            <CarCard key={v.slug} veiculo={v} fotoReal={temFotoReal(v.slug)} />
+            <CarCard key={v.slug} veiculo={v} />
           ))}
         </div>
       </section>

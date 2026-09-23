@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { linkWhatsApp, siteConfig } from "@/data/site-config";
-import { getDestaques } from "@/data/estoque";
+import { getDestaques } from "@/lib/veiculos";
 import CarThumb from "./CarThumb";
-import { temFotoReal } from "@/lib/fotos";
 
-export default function Hero() {
-  const destaques = getDestaques().slice(0, 3);
+export default async function Hero() {
+  const destaques = (await getDestaques()).slice(0, 3);
   return (
     <section className="relative overflow-hidden border-b border-white/10 bg-brand-black">
       <div className="pointer-events-none absolute inset-0 bg-diagonal-lime opacity-[0.05]" />
@@ -70,11 +69,10 @@ export default function Hero() {
           {destaques.map((v, i) => (
             <CarThumb
               key={v.slug}
-              slug={v.slug}
-              fotoReal={temFotoReal(v.slug)}
               marca={v.marca}
               modelo={v.modelo}
               cor={v.cor}
+              fotos={v.fotos}
               angulo={i === 0 ? "lateral" : i === 1 ? "frente" : "traseira"}
               className={`aspect-[4/3] rounded border ${
                 i === 0 ? "border-2 border-brand-lime" : "border-white/10"

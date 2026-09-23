@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next";
-import { estoque } from "@/data/estoque";
+import { getEstoque } from "@/lib/veiculos";
 import { SITE_URL } from "@/data/site-config";
 
-// Necessário para "output: export" (build do GitHub Pages) gerar este
-// arquivo como estático — sem efeito no build padrão (standalone/Docker).
-export const dynamic = "force-static";
+export const revalidate = 0;
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const estoque = await getEstoque();
+
   const paginasFixas: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/`, changeFrequency: "weekly", priority: 1 },
     { url: `${SITE_URL}/estoque`, changeFrequency: "daily", priority: 0.9 },

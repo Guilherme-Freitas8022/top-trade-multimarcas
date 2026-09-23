@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import CarGrid from "@/components/CarGrid";
-import { estoque } from "@/data/estoque";
-import { temFotoReal } from "@/lib/fotos";
+import { getEstoque } from "@/lib/veiculos";
+
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Estoque completo",
@@ -9,7 +10,9 @@ export const metadata: Metadata = {
     "Veja todos os carros 0KM e seminovos disponíveis na Top Trade Multimarcas, em Volta Redonda/RJ.",
 };
 
-export default function EstoquePage() {
+export default async function EstoquePage() {
+  const estoque = await getEstoque();
+
   return (
     <div className="container-page py-14 sm:py-20">
       <span className="font-display text-xs font-semibold uppercase tracking-widest text-brand-lime">
@@ -24,7 +27,7 @@ export default function EstoquePage() {
       </p>
 
       <div className="mt-10">
-        <CarGrid veiculos={estoque.map((v) => ({ ...v, fotoReal: temFotoReal(v.slug) }))} />
+        <CarGrid veiculos={estoque} />
       </div>
     </div>
   );
