@@ -7,7 +7,7 @@ import type { Veiculo } from "@/lib/veiculos";
 import type { VeiculoFormData } from "@/app/admin/actions";
 
 const CAMBIOS = ["Manual", "Automático", "CVT", "Automatizado"];
-const MAX_FOTOS = 6;
+const MAX_FOTOS = 8;
 
 export default function VeiculoForm({
   veiculoExistente,
@@ -68,6 +68,16 @@ export default function VeiculoForm({
     setFotos((f) => f.filter((foto) => foto !== url));
   }
 
+  function moverFoto(indice: number, direcao: -1 | 1) {
+    setFotos((f) => {
+      const novoIndice = indice + direcao;
+      if (novoIndice < 0 || novoIndice >= f.length) return f;
+      const copia = [...f];
+      [copia[indice], copia[novoIndice]] = [copia[novoIndice], copia[indice]];
+      return copia;
+    });
+  }
+
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
     setSalvando(true);
@@ -102,137 +112,166 @@ export default function VeiculoForm({
   }
 
   return (
-    <form onSubmit={salvar} className="max-w-3xl space-y-8">
-      <section>
-        <h2 className="font-display text-sm font-semibold uppercase tracking-wide text-brand-lime">
-          Fotos
-        </h2>
-        <div className="mt-3 grid grid-cols-3 gap-3 sm:grid-cols-4">
-          {fotos.map((url) => (
-            <div key={url} className="group relative aspect-[4/3] overflow-hidden rounded border border-white/10 bg-brand-surface2">
-              <Image src={url} alt="Foto do veículo" fill className="object-contain p-1" />
-              <button
-                type="button"
-                onClick={() => removerFoto(url)}
-                className="absolute right-1 top-1 rounded-full bg-black/70 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
-              >
-                Remover
-              </button>
+    <form onSubmit={salvar} className="max-w-5xl space-y-6">
+      <Secao titulo="Fotos">
+        <p className="mb-4 text-xs text-brand-white/50">
+          A primeira foto é a capa — a que aparece na vitrine. Use as setas para reordenar.
+        </p>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {fotos.map((url, i) => (
+            <div key={url} className="overflow-hidden rounded border border-white/10 bg-brand-surface2">
+              <div className="relative aspect-[4/3]">
+                <Image src={url} alt="Foto do veículo" fill className="object-contain p-2" />
+                {i === 0 && (
+                  <span className="badge badge-0km absolute left-2 top-2 text-[10px]">Capa</span>
+                )}
+              </div>
+              <div className="flex items-center justify-between gap-1 border-t border-white/10 px-2 py-1.5">
+                <button
+                  type="button"
+                  onClick={() => moverFoto(i, -1)}
+                  disabled={i === 0}
+                  aria-label="Mover foto para a esquerda"
+                  className="rounded px-2 py-1 text-brand-white/60 hover:bg-white/10 hover:text-brand-lime disabled:opacity-20"
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removerFoto(url)}
+                  className="text-xs font-semibold uppercase tracking-wide text-red-400 hover:underline"
+                >
+                  Remover
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moverFoto(i, 1)}
+                  disabled={i === fotos.length - 1}
+                  aria-label="Mover foto para a direita"
+                  className="rounded px-2 py-1 text-brand-white/60 hover:bg-white/10 hover:text-brand-lime disabled:opacity-20"
+                >
+                  →
+                </button>
+              </div>
             </div>
           ))}
           {fotos.length < MAX_FOTOS && (
-            <label className="flex aspect-[4/3] cursor-pointer flex-col items-center justify-center gap-1 rounded border border-dashed border-white/20 text-xs text-brand-white/50 hover:border-brand-lime hover:text-brand-lime">
+            <label className="flex aspect-[4/3] cursor-pointer flex-col items-center justify-center gap-1 rounded border border-dashed border-white/20 text-sm text-brand-white/50 hover:border-brand-lime hover:text-brand-lime">
               {enviandoFoto ? "Enviando..." : "+ Adicionar foto"}
               <input type="file" accept="image/*" onChange={enviarFoto} disabled={enviandoFoto} className="hidden" />
             </label>
           )}
         </div>
-      </section>
+      </Secao>
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Campo label="Marca">
-          <input required value={marca} onChange={(e) => setMarca(e.target.value)} className="input" />
-        </Campo>
-        <Campo label="Modelo">
-          <input required value={modelo} onChange={(e) => setModelo(e.target.value)} className="input" />
-        </Campo>
-        <Campo label="Versão">
-          <input
-            required
-            value={versao}
-            onChange={(e) => setVersao(e.target.value)}
-            placeholder="Ex: GLi 2.0 Flex Automático"
-            className="input"
-          />
-        </Campo>
-        <Campo label="Cor">
-          <input required value={cor} onChange={(e) => setCor(e.target.value)} className="input" />
-        </Campo>
-        <Campo label="Ano de fabricação">
-          <input
-            required
-            type="number"
-            value={ano}
-            onChange={(e) => setAno(Number(e.target.value))}
-            className="input"
-          />
-        </Campo>
-        <Campo label="Ano do modelo">
-          <input
-            required
-            type="number"
-            value={anoModelo}
-            onChange={(e) => setAnoModelo(Number(e.target.value))}
-            className="input"
-          />
-        </Campo>
-        <Campo label="Quilometragem">
-          <input required type="number" value={km} onChange={(e) => setKm(Number(e.target.value))} className="input" />
-        </Campo>
-        <Campo label="Preço (R$)">
-          <input
-            required
-            type="number"
-            value={preco}
-            onChange={(e) => setPreco(Number(e.target.value))}
-            className="input"
-          />
-        </Campo>
-        <Campo label="Câmbio">
-          <select value={cambio} onChange={(e) => setCambio(e.target.value)} className="input">
-            {CAMBIOS.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </Campo>
-        <Campo label="Combustível">
-          <input required value={combustivel} onChange={(e) => setCombustivel(e.target.value)} className="input" />
-        </Campo>
-        <Campo label="Portas">
-          <input
-            required
-            type="number"
-            value={portas}
-            onChange={(e) => setPortas(Number(e.target.value))}
-            className="input"
-          />
-        </Campo>
-        <Campo label="Categoria">
-          <select value={categoria} onChange={(e) => setCategoria(e.target.value as "0km" | "seminovo")} className="input">
-            <option value="seminovo">Seminovo</option>
-            <option value="0km">0KM</option>
-          </select>
-        </Campo>
-      </section>
+      <Secao titulo="Identificação">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <Campo label="Marca">
+            <input required value={marca} onChange={(e) => setMarca(e.target.value)} className="input" />
+          </Campo>
+          <Campo label="Modelo">
+            <input required value={modelo} onChange={(e) => setModelo(e.target.value)} className="input" />
+          </Campo>
+          <Campo label="Cor">
+            <input required value={cor} onChange={(e) => setCor(e.target.value)} className="input" />
+          </Campo>
+          <Campo label="Versão" className="sm:col-span-3">
+            <input
+              required
+              value={versao}
+              onChange={(e) => setVersao(e.target.value)}
+              placeholder="Ex: GLi 2.0 Flex Automático"
+              className="input"
+            />
+          </Campo>
+        </div>
+      </Secao>
 
-      <section>
-        <Campo label="Opcionais (separados por vírgula)">
-          <input
-            value={opcionaisTexto}
-            onChange={(e) => setOpcionaisTexto(e.target.value)}
-            placeholder="Central multimídia, Câmera de ré, Ar digital"
-            className="input"
-          />
-        </Campo>
-      </section>
+      <Secao titulo="Ficha técnica">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+          <Campo label="Ano de fabricação">
+            <input required type="number" value={ano} onChange={(e) => setAno(Number(e.target.value))} className="input" />
+          </Campo>
+          <Campo label="Ano do modelo">
+            <input
+              required
+              type="number"
+              value={anoModelo}
+              onChange={(e) => setAnoModelo(Number(e.target.value))}
+              className="input"
+            />
+          </Campo>
+          <Campo label="Quilometragem">
+            <input required type="number" value={km} onChange={(e) => setKm(Number(e.target.value))} className="input" />
+          </Campo>
+          <Campo label="Câmbio">
+            <select value={cambio} onChange={(e) => setCambio(e.target.value)} className="input">
+              {CAMBIOS.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </Campo>
+          <Campo label="Combustível">
+            <input required value={combustivel} onChange={(e) => setCombustivel(e.target.value)} className="input" />
+          </Campo>
+          <Campo label="Portas">
+            <input
+              required
+              type="number"
+              value={portas}
+              onChange={(e) => setPortas(Number(e.target.value))}
+              className="input"
+            />
+          </Campo>
+        </div>
+      </Secao>
 
-      <section>
-        <Campo label="Descrição">
-          <textarea
-            value={descricao}
-            onChange={(e) => setDescricao(e.target.value)}
-            rows={3}
-            className="input resize-none"
-          />
-        </Campo>
-      </section>
+      <Secao titulo="Venda">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <Campo label="Preço (R$)">
+            <input
+              required
+              type="number"
+              value={preco}
+              onChange={(e) => setPreco(Number(e.target.value))}
+              className="input"
+            />
+          </Campo>
+          <Campo label="Categoria">
+            <select value={categoria} onChange={(e) => setCategoria(e.target.value as "0km" | "seminovo")} className="input">
+              <option value="seminovo">Seminovo</option>
+              <option value="0km">0KM</option>
+            </select>
+          </Campo>
+          <label className="flex items-center gap-2 self-end pb-2.5 text-sm text-brand-white/70">
+            <input type="checkbox" checked={destaque} onChange={(e) => setDestaque(e.target.checked)} className="h-4 w-4" />
+            Mostrar como destaque na home
+          </label>
+        </div>
+      </Secao>
 
-      <label className="flex items-center gap-2 text-sm text-brand-white/70">
-        <input type="checkbox" checked={destaque} onChange={(e) => setDestaque(e.target.checked)} className="h-4 w-4" />
-        Mostrar como destaque na home
-      </label>
+      <Secao titulo="Detalhes">
+        <div className="space-y-4">
+          <Campo label="Opcionais (separados por vírgula)">
+            <input
+              value={opcionaisTexto}
+              onChange={(e) => setOpcionaisTexto(e.target.value)}
+              placeholder="Central multimídia, Câmera de ré, Ar digital"
+              className="input"
+            />
+          </Campo>
+          <Campo label="Descrição">
+            <textarea
+              value={descricao}
+              onChange={(e) => setDescricao(e.target.value)}
+              rows={3}
+              className="input resize-none"
+            />
+          </Campo>
+        </div>
+      </Secao>
 
       {erro && <p className="text-sm text-red-400">{erro}</p>}
 
@@ -243,11 +282,33 @@ export default function VeiculoForm({
   );
 }
 
-function Campo({ label, children }: { label: string; children: React.ReactNode }) {
+function Secao({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
-    <div>
+    <section className="rounded border border-white/10 bg-brand-surface p-6">
+      <div className="mb-5 flex items-center gap-3">
+        <div className="h-1 w-8 bg-brand-lime" />
+        <h2 className="font-display text-sm font-semibold uppercase tracking-widest text-brand-white">
+          {titulo}
+        </h2>
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function Campo({
+  label,
+  children,
+  className = "",
+}: {
+  label: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={className}>
       <label className="block text-xs uppercase tracking-wide text-brand-white/50">{label}</label>
-      <div className="mt-1">{children}</div>
+      <div className="mt-1.5">{children}</div>
     </div>
   );
 }
