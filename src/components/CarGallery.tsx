@@ -38,9 +38,6 @@ export default function CarGallery({
             className="object-contain p-3"
             priority
           />
-          <span className="absolute bottom-2 left-2 rounded-sm bg-black/55 px-1.5 py-0.5 font-body text-[9px] uppercase tracking-wide text-brand-white/60">
-            Foto ilustrativa do modelo — não é a unidade física do estoque
-          </span>
         </div>
 
         {fotos.length > 1 && (
