@@ -45,7 +45,7 @@ export default function Header() {
     <header className="sticky top-0 z-40 border-b border-white/10 bg-brand-black/95 backdrop-blur">
       <div className="container-page flex h-16 items-center justify-between sm:h-20">
         <Link href="/" onClick={() => setAberto(false)}>
-          <Logo />
+          <Logo size="header" />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">

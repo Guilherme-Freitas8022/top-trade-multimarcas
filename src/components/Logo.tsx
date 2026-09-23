@@ -9,9 +9,14 @@ export default function Logo({
   size = "default",
 }: {
   className?: string;
-  size?: "default" | "compact";
+  size?: "default" | "compact" | "header";
 }) {
-  const imgSize = size === "compact" ? "h-9 w-auto" : "h-11 w-auto sm:h-12";
+  const imgSize =
+    size === "compact"
+      ? "h-9 w-auto"
+      : size === "header"
+        ? "h-12 w-auto sm:h-14"
+        : "h-11 w-auto sm:h-12";
   return (
     <div className={`flex items-center ${className}`}>
       <Image

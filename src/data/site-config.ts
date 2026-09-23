@@ -4,10 +4,10 @@
 // Profile (perfil verificado da loja, colado pelo operador em 2026-09-22).
 // Telefone/WhatsApp confirmado pelo operador em 2026-09-23.
 
-// URL pública atual do site. Trocar quando o domínio próprio (ex:
-// toptrademultimarcas.com.br) estiver definido — usado no metadata de SEO
-// (sitemap, robots, Open Graph). Ver Relacionamento/Decisoes/decisoes.md.
-export const SITE_URL = "https://top-trade-multimarcas.vercel.app";
+// URL pública oficial do site (domínio próprio definido em 2026-09-23) —
+// usada no metadata de SEO (sitemap, robots, Open Graph). Ver
+// Relacionamento/Decisoes/decisoes.md.
+export const SITE_URL = "https://toptrademultimarcas.logikare.com.br";
 
 export const siteConfig = {
   nome: "Top Trade Multimarcas",
