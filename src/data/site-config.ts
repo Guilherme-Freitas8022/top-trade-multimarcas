@@ -9,7 +9,7 @@
 // URL pública atual do site. Trocar quando o domínio próprio (ex:
 // toptrademultimarcas.com.br) estiver definido — usado no metadata de SEO
 // (sitemap, robots, Open Graph). Ver Relacionamento/Decisoes/decisoes.md.
-export const SITE_URL = "https://guilherme-freitas8022.github.io/top-trade-multimarcas";
+export const SITE_URL = "https://top-trade-multimarcas.vercel.app";
 
 export const siteConfig = {
   nome: "Top Trade Multimarcas",
