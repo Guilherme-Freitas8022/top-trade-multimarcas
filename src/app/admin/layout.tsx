@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabase/server";
 import { sair } from "./actions";
 import Logo from "@/components/Logo";
+
+// Painel interno — nunca deve aparecer em busca do Google.
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const supabase = await supabaseServer();
