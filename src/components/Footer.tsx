@@ -69,13 +69,10 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-white/10 py-6">
-        <div className="container-page flex flex-col items-center justify-between gap-2 text-center text-xs text-brand-white/40 sm:flex-row">
+        <div className="container-page text-center text-xs text-brand-white/40">
           <p>
             © {new Date().getFullYear()} {siteConfig.nome}. Todos os direitos reservados.
           </p>
-          <Link href="/login" className="hover:text-brand-lime">
-            Área do vendedor
-          </Link>
         </div>
       </div>
     </footer>

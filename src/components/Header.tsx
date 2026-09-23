@@ -16,6 +16,15 @@ function InstagramIcon({ className = "" }: { className?: string }) {
   );
 }
 
+function LoginIcon({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden="true">
+      <circle cx="12" cy="8" r="3.3" stroke="currentColor" strokeWidth="1.8" />
+      <path d="M5 20c1.2-4 4-6 7-6s5.8 2 7 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 const NAV = [
   { href: "/", label: "Início" },
   { href: "/estoque", label: "Estoque" },
@@ -58,6 +67,14 @@ export default function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <Link
+            href="/login"
+            aria-label="Área do vendedor — login"
+            title="Área do vendedor"
+            className="flex h-11 w-11 items-center justify-center rounded border border-white/15 text-brand-white/80 transition-colors hover:border-brand-lime hover:text-brand-lime"
+          >
+            <LoginIcon className="h-5 w-5" />
+          </Link>
           <a
             href={siteConfig.instagram}
             target="_blank"
@@ -130,6 +147,14 @@ export default function Header() {
               >
                 <InstagramIcon className="h-5 w-5" />
               </a>
+              <Link
+                href="/login"
+                onClick={() => setAberto(false)}
+                aria-label="Área do vendedor — login"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded border border-white/15 text-brand-white/80"
+              >
+                <LoginIcon className="h-5 w-5" />
+              </Link>
             </div>
           </div>
         </nav>
