@@ -6,6 +6,10 @@ import { supabaseBrowser } from "@/lib/supabase/client";
 import type { Veiculo } from "@/lib/veiculos";
 import type { VeiculoFormData } from "@/app/admin/actions";
 
+function apenasDigitos(texto: string): string {
+  return texto.replace(/\D/g, "");
+}
+
 const CAMBIOS = ["Manual", "Automático", "CVT", "Automatizado"];
 const MAX_FOTOS = 8;
 
@@ -190,19 +194,29 @@ export default function VeiculoForm({
       <Secao titulo="Ficha técnica">
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
           <Campo label="Ano de fabricação">
-            <input required type="number" value={ano} onChange={(e) => setAno(Number(e.target.value))} className="input" />
+            <input
+              required
+              type="text"
+              inputMode="numeric"
+              maxLength={4}
+              value={ano || ""}
+              onChange={(e) => setAno(Number(apenasDigitos(e.target.value)))}
+              className="input"
+            />
           </Campo>
           <Campo label="Ano do modelo">
             <input
               required
-              type="number"
-              value={anoModelo}
-              onChange={(e) => setAnoModelo(Number(e.target.value))}
+              type="text"
+              inputMode="numeric"
+              maxLength={4}
+              value={anoModelo || ""}
+              onChange={(e) => setAnoModelo(Number(apenasDigitos(e.target.value)))}
               className="input"
             />
           </Campo>
           <Campo label="Quilometragem">
-            <input required type="number" value={km} onChange={(e) => setKm(Number(e.target.value))} className="input" />
+            <CampoNumeroFormatado valor={km} onValorChange={setKm} sufixo="km" />
           </Campo>
           <Campo label="Câmbio">
             <select value={cambio} onChange={(e) => setCambio(e.target.value)} className="input">
@@ -219,9 +233,11 @@ export default function VeiculoForm({
           <Campo label="Portas">
             <input
               required
-              type="number"
-              value={portas}
-              onChange={(e) => setPortas(Number(e.target.value))}
+              type="text"
+              inputMode="numeric"
+              maxLength={2}
+              value={portas || ""}
+              onChange={(e) => setPortas(Number(apenasDigitos(e.target.value)))}
               className="input"
             />
           </Campo>
@@ -231,13 +247,7 @@ export default function VeiculoForm({
       <Secao titulo="Venda">
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <Campo label="Preço (R$)">
-            <input
-              required
-              type="number"
-              value={preco}
-              onChange={(e) => setPreco(Number(e.target.value))}
-              className="input"
-            />
+            <CampoNumeroFormatado valor={preco} onValorChange={setPreco} prefixo="R$" />
           </Campo>
           <Campo label="Categoria">
             <select value={categoria} onChange={(e) => setCategoria(e.target.value as "0km" | "seminovo")} className="input">
@@ -293,6 +303,42 @@ function Secao({ titulo, children }: { titulo: string; children: React.ReactNode
       </div>
       {children}
     </section>
+  );
+}
+
+function CampoNumeroFormatado({
+  valor,
+  onValorChange,
+  prefixo,
+  sufixo,
+}: {
+  valor: number;
+  onValorChange: (v: number) => void;
+  prefixo?: string;
+  sufixo?: string;
+}) {
+  return (
+    <div className="relative">
+      {prefixo && (
+        <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-sm text-brand-white/50">
+          {prefixo}
+        </span>
+      )}
+      <input
+        required
+        type="text"
+        inputMode="numeric"
+        value={valor ? valor.toLocaleString("pt-BR") : ""}
+        placeholder="0"
+        onChange={(e) => onValorChange(Number(apenasDigitos(e.target.value)))}
+        className={`input ${prefixo ? "pl-10" : ""} ${sufixo ? "pr-10" : ""}`}
+      />
+      {sufixo && (
+        <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-sm text-brand-white/50">
+          {sufixo}
+        </span>
+      )}
+    </div>
   );
 }
 
