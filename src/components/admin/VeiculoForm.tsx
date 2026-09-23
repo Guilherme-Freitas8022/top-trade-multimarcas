@@ -12,6 +12,9 @@ function apenasDigitos(texto: string): string {
 
 const CAMBIOS = ["Manual", "Automático", "CVT", "Automatizado"];
 const MAX_FOTOS = 8;
+const MAX_TAMANHO_FOTO_MB = 8;
+const TIPOS_FOTO_ACEITOS = ["image/jpeg", "image/png", "image/webp"];
+const ANO_MINIMO = 1980;
 
 export default function VeiculoForm({
   veiculoExistente,
@@ -46,6 +49,16 @@ export default function VeiculoForm({
     if (!arquivo) return;
     if (fotos.length >= MAX_FOTOS) {
       setErro(`Máximo de ${MAX_FOTOS} fotos por veículo.`);
+      return;
+    }
+    if (!TIPOS_FOTO_ACEITOS.includes(arquivo.type)) {
+      setErro("Formato inválido — envie uma foto em JPG, PNG ou WEBP.");
+      e.target.value = "";
+      return;
+    }
+    if (arquivo.size > MAX_TAMANHO_FOTO_MB * 1024 * 1024) {
+      setErro(`Foto muito grande — o máximo é ${MAX_TAMANHO_FOTO_MB}MB.`);
+      e.target.value = "";
       return;
     }
 
@@ -84,8 +97,27 @@ export default function VeiculoForm({
 
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
-    setSalvando(true);
     setErro(null);
+
+    const anoAtual = new Date().getFullYear();
+    if (ano < ANO_MINIMO || ano > anoAtual + 1) {
+      setErro(`Ano de fabricação inválido — use um valor entre ${ANO_MINIMO} e ${anoAtual + 1}.`);
+      return;
+    }
+    if (anoModelo < ano) {
+      setErro("Ano do modelo não pode ser anterior ao ano de fabricação.");
+      return;
+    }
+    if (preco <= 0) {
+      setErro("Informe um preço válido, maior que zero.");
+      return;
+    }
+    if (fotos.length === 0) {
+      setErro("Adicione pelo menos uma foto antes de salvar.");
+      return;
+    }
+
+    setSalvando(true);
 
     const opcionais = opcionaisTexto
       .split(",")
@@ -162,7 +194,13 @@ export default function VeiculoForm({
           {fotos.length < MAX_FOTOS && (
             <label className="flex aspect-[4/3] cursor-pointer flex-col items-center justify-center gap-1 rounded border border-dashed border-white/20 text-sm text-brand-white/50 hover:border-brand-lime hover:text-brand-lime">
               {enviandoFoto ? "Enviando..." : "+ Adicionar foto"}
-              <input type="file" accept="image/*" onChange={enviarFoto} disabled={enviandoFoto} className="hidden" />
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={enviarFoto}
+                disabled={enviandoFoto}
+                className="hidden"
+              />
             </label>
           )}
         </div>
