@@ -2,9 +2,7 @@
 //
 // Endereço, bairro e descrição institucional CONFIRMADOS via Google Business
 // Profile (perfil verificado da loja, colado pelo operador em 2026-09-22).
-// Telefone ainda PENDENTE — o próprio perfil do Google não lista telefone
-// ("Add place's phone number"), então o WhatsApp abaixo continua placeholder
-// até o cliente confirmar o número oficial.
+// Telefone/WhatsApp confirmado pelo operador em 2026-09-23.
 
 // URL pública atual do site. Trocar quando o domínio próprio (ex:
 // toptrademultimarcas.com.br) estiver definido — usado no metadata de SEO
@@ -18,9 +16,8 @@ export const siteConfig = {
   descricao:
     "Pioneiros na venda de veículos 0KM em Volta Redonda/RJ há 25 anos. Atendimento personalizado, veículos com procedência, revisados, higienizados e com garantia — estoque 100% periciado com laudo cautelar.",
 
-  // PLACEHOLDER — Google Business Profile não lista telefone; confirmar com o cliente antes de publicar
-  telefone: "(24) 3803-3122",
-  whatsapp: "5524988033122",
+  telefone: "(24) 98826-3198",
+  whatsapp: "5524988263198",
 
   endereco: {
     // Rua e número confirmados por duas fontes independentes em 2026-09-22:
